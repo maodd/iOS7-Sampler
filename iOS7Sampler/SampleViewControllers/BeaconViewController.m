@@ -12,7 +12,7 @@
 #import "PulsingHaloLayer.h"
 
 
-#define kProximityUUID  @"4DAE64C6-DA88-488B-B853-039A037C0197"
+#define kProximityUUID  @"B9407F30-F5F8-466E-AFF9-25556B57FE6D"
 #define kIdentifier     @"com.shu223.ios7sampler"
 
 
@@ -31,6 +31,9 @@
 @property (nonatomic, strong) CBPeripheralManager *peripheralManager;
 @property (nonatomic, weak) IBOutlet UIView *overlayView;
 @property (nonatomic, weak) IBOutlet UILabel *stateLabel;
+@property (nonatomic, weak) IBOutlet UITableView *tableView;
+
+@property (nonatomic, strong) NSArray *beacons;
 
 @end
 
@@ -181,11 +184,62 @@
         didRangeBeacons:(NSArray *)beacons
                inRegion:(CLBeaconRegion *)region
 {
+
+    
+    self.beacons = [beacons sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        CLBeacon *beacon1 = (CLBeacon*)obj1;
+        CLBeacon *beacon2 = (CLBeacon*)obj2;
+        
+        return [beacon1.major compare:beacon2.major]; //&& [beacon1.minor compare:beacon2.minor];
+        
+    }];
+    [self.tableView reloadData];
+    
     CLBeacon *beacon = beacons.firstObject;
     
+
+    
+    self.proximityLabel.text = [self convertToProximityString:beacon.proximity];
+
+    self.rssiLabel.text = [NSString stringWithFormat:@"%ld [dB]", (long)beacon.rssi];
+    self.accuracyLabel.text = [NSString stringWithFormat:@"%.0f [m]", beacon.accuracy];
+}
+
+#pragma mark - UITableViewDataSource
+- (NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return kProximityUUID;
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.beacons.count;
+}
+
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
+        
+    }
+    
+    CLBeacon *beacon = self.beacons[indexPath.row];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"proximity:%@  accuracy:%f rssi:%d",
+                                   [self convertToProximityString:beacon.proximity],
+                                    beacon.accuracy,
+                                 beacon.rssi]
+                                   ;
+    cell.textLabel.text = [NSString stringWithFormat:@"major:%d minor:%d",beacon.major.integerValue, beacon.minor.integerValue];
+    
+    return cell;
+}
+
+- (NSString*)convertToProximityString:(CLProximity)proximity
+{
     NSString *proximityStr;
     
-    switch (beacon.proximity) {
+    switch (proximity) {
             
         case CLProximityImmediate:
         {
@@ -202,7 +256,7 @@
         case CLProximityFar:
         {
             proximityStr = @"Far";
-         
+            
             break;
         }
         default:
@@ -213,12 +267,8 @@
         }
     }
     
-    self.proximityLabel.text = proximityStr;
-
-    self.rssiLabel.text = [NSString stringWithFormat:@"%ld [dB]", (long)beacon.rssi];
-    self.accuracyLabel.text = [NSString stringWithFormat:@"%.0f [m]", beacon.accuracy];
+    return proximityStr;
 }
-
 
 // =============================================================================
 #pragma mark - for peripheral

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6249" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6243"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BeaconViewController">
@@ -13,6 +13,7 @@
                 <outlet property="rssiLabel" destination="5FN-b5-OMr" id="eIf-dj-VRS"/>
                 <outlet property="stateLabel" destination="ftG-KG-wS5" id="WT0-1u-FfU"/>
                 <outlet property="statusLabel" destination="1o7-Un-bYm" id="qUc-n2-KaY"/>
+                <outlet property="tableView" destination="NNg-3O-ua7" id="ybO-18-TbS"/>
                 <outlet property="view" destination="1" id="3"/>
             </connections>
         </placeholder>
@@ -71,6 +72,14 @@
                         <action selector="pressTurnIntoBeacon" destination="-1" eventType="touchUpInside" id="9f2-lQ-OIR"/>
                     </connections>
                 </button>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="NNg-3O-ua7">
+                    <rect key="frame" x="0.0" y="109" width="320" height="150"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="RZN-uT-Knt"/>
+                        <outlet property="delegate" destination="-1" id="swN-j2-i6O"/>
+                    </connections>
+                </tableView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="12" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="2uR-0B-U69">
                     <rect key="frame" x="20" y="474" width="280" height="74"/>
                     <constraints>
